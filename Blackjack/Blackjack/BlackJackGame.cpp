@@ -13,6 +13,20 @@ The user gets dealt two, and the dealer one. The dealer asks if you want more un
 	that a 10 would bust them. If the users first two cards = 10 or 9, the game is worth
 	two. Each game won is normally worth 1 point, and the game needs to repeat 10 times.
 
-
-
 */
+
+#include <iostream>
+using namespace std;
+
+int main()
+{
+	const int cardsDeck[52] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+	10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 1, 2, 3, 4,
+	5, 6, 7, 8, 9, 10, 10, 10, }; // 52 cards, with 10 being face card
+	int dealerWins;
+	int playerWins;
+	int dealerHand[10];
+	int playerHand[10];
+	int dealRand(int);
+}
+
