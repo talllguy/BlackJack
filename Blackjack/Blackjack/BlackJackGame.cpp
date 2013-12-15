@@ -1,32 +1,82 @@
-/* notes
+/* 
 
-The only hard part about this will be the ace. Could be 1 or 11.
 
-The deck is suit-less, however, it would be a good idea to use an array to pick from
-	where it would be like [1,2,3,...10,10,10,1,2,... repeat]. The reason for this is
-	there are three 10s so the chance of getting one should be higher. Use at least 4
-	copies each number to represent the deck.
-
-The user gets dealt two, and the dealer one. The dealer asks if you want more until
-	you say no. Then it is the dealers turn. They must keep going until they have
-	more than or equal 17. so if they had 16, they'd have to get another card, knowing
-	that a 10 would bust them. If the users first two cards = 10 or 9, the game is worth
-	two. Each game won is normally worth 1 point, and the game needs to repeat 10 times.
 
 */
 
 #include <iostream>
+#include <time.h>
 using namespace std;
+
+// global card deck variable
+const int cardsDeck[52] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 1, 2, 3, 4,
+5, 6, 7, 8, 9, 10, 10, 10, }; // 52 cards, with 10 being face card
+
+// functions
+void random(); // random number setup
+int deal(); // function to deal a card
+int ace(int); // function to decide an ace's value
+int handValue(int[]); // sums the value of a given hand
 
 int main()
 {
-	const int cardsDeck[52] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-	10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 1, 2, 3, 4,
-	5, 6, 7, 8, 9, 10, 10, 10, }; // 52 cards, with 10 being face card
-	int dealerWins;
-	int playerWins;
-	int dealerHand[10];
-	int playerHand[10];
-	int dealRand(int);
+	// enum
+	enum gameStatus // what is the status of the game
+	{
+		inProgress,win,bust
+	};
+	
+	// structs
+	struct player
+	{
+		int hand[10];
+		gameStatus status;
+		int winCounter;
+	};
+	player user/*, dealer*/;
+	
+	// variables
+	int hands = 0; // counter for hands played
+
+	// random set up
+	random();
+	
+	// game
+	while (hands < 10)
+	{
+		user.hand[0] = deal();
+		user.hand[1] = deal();
+
+		cout << "Let's play a hand.\n";
+		cout << "Your hand: \n";
+		cout << user.hand[0] << " " << user.hand[1] << endl;
+
+		cin >> hands;
+	}
+	
+	return 0;
 }
 
+int deal()
+{
+	int cardIndex = 0; // random index value
+	int card = 0; // actual card value to return
+
+	cardIndex = rand() % 52;
+	//cout << "Random index picked:" << cardIndex << endl; // testing output
+
+	card = cardsDeck[cardIndex];
+	//cout << "Card is " << card << endl;
+
+	return card;
+}
+
+void random()
+{
+	long seed;
+	time_t *storage;
+	storage = 0;
+	seed = time(storage); // use the system clock to produce an initial time 
+	srand(seed);  // to seed the random number generator
+}
