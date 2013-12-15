@@ -5,11 +5,32 @@ BlackJack Pseudocode and Planning
 
 Chatted with the professor. Here is a summary:
 
-    The only hard part about this will be the ace. Could be 1 or 11.
+> The only hard part about this will be the ace. Could be 1 or 11.
 
-     The deck is suit-less, however, it would be a good idea to use an array to pick from where it would be like [1,2,3,...10,10,10,1,2,... repeat]. The reason for this is there are three 10s so the chance of getting one should be higher. Use at least 4 copies each number to represent the deck.
+>The deck is suit-less, however, it would be a good idea to use an
+>array to pick from where it would be like [1,2,3,...10,10,10,1,2,
+>... repeat]. The reason for this is there are three 10s so the
+>chance of getting one should be higher. Use at least 4 copies each
+>number to represent the deck.
 
-     The user gets dealt two, and the dealer one. The dealer asks if you want more until you say no. Then it is the dealers turn. They must keep going until they have more than or equal 17. so if they had 16, they'd have to get another card, knowing that a 10 would bust them. If the users first two cards = 10 or 9, the game is worth two. Each game won is normally worth 1 point, and the game needs to repeat 10 times.
+>The user gets dealt two, and the dealer one. The dealer asks if
+>you want more until you say no. Then it is the dealers turn. They
+>must keep going until they have more than or equal 17. so if they
+>had 16, they'd have to get another card, knowing that a 10 would
+>bust them. If the users first two cards = 10 or 9, the game is worth
+>two. Each game won is normally worth 1 point, and the game needs to
+>repeat 10 times.
 	 
-# Planning
+## Planning
 
+### Variables
+
+- Deck. An array of 52 ints, with 10 repeating 3 times for the face cards
+- Win counters. A win counter for both the dealer and the player
+- Dealer's hand. Integer array?
+- Player's hand. Integer array?
+
+### Functions
+
+- Pick a random card
+- Decide where ace should be 1 or 11
