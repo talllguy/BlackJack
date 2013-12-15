@@ -29,8 +29,29 @@ Chatted with the professor. Here is a summary:
 - Win counters. A win counter for both the dealer and the player
 - Dealer's hand. Integer array?
 - Player's hand. Integer array?
+- Double flag
+- Status flag (Winning, bust)
 
 ### Functions
 
-- Pick a random card
+- Pick a random card (dealing)
 - Decide where ace should be 1 or 11
+- Add up the value of the hand
+
+## Psuedocode
+
+- initialize functions and variables
+- while loop to play 10 hands
+- deal two cards to playerHand. If one is ace (1), ask for value.
+   - Send value to value function. check if double, if 21
+- deal one card to dealerHand. If is ace (1), ask for value.
+- ask do you want another card // switch case
+  - yes: deal one card to player hand.
+    -  If is ace (1), ask for value.
+    - show total (if total exceeds 21, end).
+	- ask again (only if double is false) // while loop
+  - no: continue
+- dealer deals to dealerHand until total >= 17 // while loop
+- compare both values, winner gets +1 point
+- +1 to hand counter
+
