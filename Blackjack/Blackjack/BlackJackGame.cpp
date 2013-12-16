@@ -1,7 +1,10 @@
 /* 
-
-
-
+COSC 501
+Elliott Plack
+Optional Project
+12 Dec 2013           Due date: 15 Dec 2013
+Problem: https://github.com/talllguy/BlackJack/blob/master/assignment.md
+Psuedocode: https://github.com/talllguy/BlackJack/blob/master/blackjackPlanning.md
 */
 
 #include <iostream>
@@ -11,7 +14,7 @@ using namespace std;
 // global card deck variable
 const int cardsDeck[52] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9,
 10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 1, 2, 3, 4,
-5, 6, 7, 8, 9, 10, 10, 10, }; // 52 cards, with 10 being face card
+5, 6, 7, 8, 9, 10, 10, 10 }; // 52 cards, with 10 being face card
 
 // functions
 void random(); // random number setup
@@ -47,6 +50,7 @@ int main()
 	bool doubled = false; // flag if doubled
 	int aceValue = 1; // value of ace to be asked to player
 	int statusFlag = 0; // until I figure out how to return enum
+	char hit = 'n'; // want another card?
 
 	// random set up
 	random();
@@ -83,15 +87,15 @@ int main()
 		user.status = (gameStatus)handStatus(user.hand);
 		if (doubled == true)
 		{
-			user.hand[3] = deal();
+			user.hand[2] = deal();
 			// handle ace case
-			if (user.hand[3] == 1)
+			if (user.hand[2] == 1)
 			{
 				cout << "Enter a value for that ace! (1 or 11): ";
 				cin >> aceValue;
-				user.hand[3] = aceValue;
+				user.hand[2] = aceValue;
 			}
-			cout << "Your next card is: ";
+			cout << "Your next card is: " << user.hand[3];
 			// update value of player hand
 			user.value = handValue(user.hand);
 			// update status
@@ -111,13 +115,45 @@ int main()
 		}
 		else
 		{
+			cout << "Do you want another card? (Y/N): ";
+			cin >> hit;
+			while (hit == 'y' || hit == 'Y')
+			{
+				for (int i = 0; i < 10; i++)
+				{
+					user.hand[i + 2] = deal();
+					// handle ace case
+					if (user.hand[i + 2] == 1)
+					{
+						cout << "Enter a value for that ace! (1 or 11): ";
+						cin >> aceValue;
+						user.hand[i + 2] = aceValue;
+					}
+					cout << "Your next card is: " << user.hand[i + 2] << endl;
+					// update value of player hand
+					user.value = handValue(user.hand);
+					// update status
+					user.status = (gameStatus)handStatus(user.hand);
+					// determine fate
+					if (user.status == 1)
+					{
+						cout << "You won!";
+						user.winCounter++;
+						break;
+					}
+					else if (user.status == 2)
+					{
+						cout << "You lost!";
+						dealer.winCounter++;
+						break;
+					}
+					cout << "Do you want another card? (Y/N): ";
+					cin >> hit;
+				}
+			}
 
 		}
-
-
-
-
-		cin >> hands;
+		hands++;
 	}
 	
 	return 0;
