@@ -26,11 +26,16 @@ Chatted with the professor. Here is a summary:
 ### Variables
 
 - Deck. An array of 52 ints, with 10 repeating 3 times for the face cards
-- Win counters. A win counter for both the dealer and the player
-- Dealer's hand. Integer array?
-- Player's hand. Integer array?
+- Player struct
+ - hand (int array)
+ - status (inProgress, win, bust)
+ - wins (int)
+- Dealer struct
+ - hand (int array)
+ - status (inProgress, win, bust)
+ - wins (int)
 - Double flag
-- Status flag (Winning, bust)
+- Hands played counter
 
 ### Functions
 
