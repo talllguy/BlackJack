@@ -41,7 +41,8 @@ int main()
 		int hand[10]; // the cards in the hand
 		int value; // hand's value
 		gameStatus status; // status of the game
-		int winCounter = 0; // wins counter
+		int dealCount; // counter for deals
+		int winCounter; // wins counter
 	};
 	player user, dealer;
 	
@@ -49,10 +50,14 @@ int main()
 	int hands = 0; // counter for hands played
 	bool doubled = false; // flag if doubled
 	int statusFlag = 0; // until I figure out how to return enum
-	char hit = 'n'; // want another card?
+	char hit = 'Y'; // want another card?
 
 	// random set up
 	random();
+
+	// initialize win counters
+	user.winCounter = 0;
+	dealer.winCounter = 0;
 	
 	// game
 	while (hands < 10)
@@ -60,10 +65,15 @@ int main()
 		// initialize
 		initialize(user.hand);
 		initialize(dealer.hand);
-		// deal cards
-		user.hand[0] = deal();
-		user.hand[1] = deal();
-		dealer.hand[0] = deal();
+		user.dealCount = 0;
+		dealer.dealCount = 0;
+		// deal cards and increase counters
+		user.hand[user.dealCount] = deal();
+		user.dealCount++;
+		user.hand[user.dealCount] = deal();
+		user.dealCount++;
+		dealer.hand[dealer.dealCount] = deal();
+		dealer.dealCount++;
 		// display first deal
 		cout << "Let's play a hand.\n";
 		cout << "Your hand: " << user.hand[0] << " " << user.hand[1] << endl;
@@ -77,58 +87,46 @@ int main()
 		user.value = handValue(user.hand);
 		// update status
 		user.status = (gameStatus)handStatus(user.hand);
-		if (doubled == true)
+		while (hit == 'y' || hit == 'Y')
 		{
-			user.hand[2] = deal();
-			user.hand[2] = ace(user.hand[2]);
-			cout << "Your next card is: " << user.hand[2];
+			// update value of player hand
 			user.value = handValue(user.hand);
+			// update status
 			user.status = (gameStatus)handStatus(user.hand);
 			// determine fate
-			if (user.status == 1)
+			if (user.status == inProgress) // continue playing
 			{
-				cout << "You won!\n";
-				user.winCounter++;
-				user.winCounter++;
-			}
-			else
-			{
-				cout << "You lost!\n";
-				dealer.winCounter++;
-			}
-		}
-		else
-		{
-			int dealCount = 2; // counter for future deals
-			cout << "Do you want another card? (Y/N): ";
-			cin >> hit;
-			while (hit == 'y' || hit == 'Y')
-			{
-				user.hand[dealCount] = deal();
-				user.hand[dealCount] = ace(user.hand[dealCount]);
-				cout << "Your next card is: " << user.hand[dealCount] << endl;
-				// update value of player hand
-				user.value = handValue(user.hand);
-				// update status
-				user.status = (gameStatus)handStatus(user.hand);
-				// determine fate
-				if (user.status == 1)
-				{
-					cout << "You won!\n";
-					user.winCounter++;
-					break;
-				}
-				else if (user.status == 2)
-				{
-					cout << "You lost!\n";
-					dealer.winCounter++;
-					break;
-				}
-				dealCount++;
 				cout << "Do you want another card? (Y/N): ";
 				cin >> hit;
+				user.hand[user.dealCount] = deal();
+				user.hand[user.dealCount] = ace(user.hand[user.dealCount]);
+				cout << "You were dealt a " << user.hand[user.dealCount] << endl;
 			}
-
+			else if (user.status == win) // win
+			{
+				cout << "You won!\n";
+				if (doubled = true)
+				{
+					user.winCounter++;
+					user.winCounter++;
+				}
+				else
+					user.winCounter++;
+				hit = 'n'; // causes game loop to end
+			}
+			else if (user.status == bust)
+			{
+				cout << "You lost!\n";
+				if (doubled = true)
+				{
+					dealer.winCounter++;
+					dealer.winCounter++;
+				}
+				else
+					dealer.winCounter++;
+				hit = 'n'; // causes game loop to end
+			}
+			
 		}
 		cout << "\nSCORE\n" << "You: " << user.winCounter << endl << "Me:  " << dealer.winCounter << endl << endl;
 		hands++;
