@@ -12,9 +12,9 @@ Psuedocode: https://github.com/talllguy/BlackJack/blob/master/blackjackPlanning.
 using namespace std;
 
 // global card deck variable
-const int cardsDeck[52] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 1, 2, 3, 4,
-5, 6, 7, 8, 9, 10, 10, 10 }; // 52 cards, with 10 being face card
+const int cardsDeck[52] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+10, 10, 10, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 1, 2, 3, 4,
+5, 6, 7, 8, 9, 10, 10, 10, 10 }; // 52 cards, with 10 being face card
 
 // functions
 void random(); // random number setup
@@ -41,14 +41,13 @@ int main()
 		int hand[10]; // the cards in the hand
 		int value; // hand's value
 		gameStatus status; // status of the game
-		int winCounter; // wins counter
+		int winCounter = 0; // wins counter
 	};
 	player user, dealer;
 	
 	// variables
 	int hands = 0; // counter for hands played
 	bool doubled = false; // flag if doubled
-	int aceValue = 1; // value of ace to be asked to player
 	int statusFlag = 0; // until I figure out how to return enum
 	char hit = 'n'; // want another card?
 
@@ -71,16 +70,9 @@ int main()
 		cout << "My hand:   " << dealer.hand[0] << endl;
 		// check if the hand is double-able
 		doubled = doubleCheck(user.hand);
-		// aces (sloppy)
-		for (int i = 0; i < 10; i++)
-		{
-			if (user.hand[i] == 1)
-			{
-				cout << "Enter a value for that ace! (1 or 11): ";
-				cin >> aceValue;
-				user.hand[i] = aceValue;
-			}
-		}
+		// aces
+		user.hand[0] = ace(user.hand[0]);
+		user.hand[1] = ace(user.hand[1]);
 		// update value of player hand
 		user.value = handValue(user.hand);
 		// update status
@@ -88,90 +80,64 @@ int main()
 		if (doubled == true)
 		{
 			user.hand[2] = deal();
-			// handle ace case
-			if (user.hand[2] == 1)
-			{
-				cout << "Enter a value for that ace! (1 or 11): ";
-				cin >> aceValue;
-				user.hand[2] = aceValue;
-			}
-			cout << "Your next card is: " << user.hand[3];
-			// update value of player hand
+			user.hand[2] = ace(user.hand[2]);
+			cout << "Your next card is: " << user.hand[2];
 			user.value = handValue(user.hand);
-			// update status
 			user.status = (gameStatus)handStatus(user.hand);
 			// determine fate
 			if (user.status == 1)
 			{
-				cout << "You won!";
+				cout << "You won!\n";
 				user.winCounter++;
 				user.winCounter++;
 			}
 			else
 			{
-				cout << "You lost!";
+				cout << "You lost!\n";
 				dealer.winCounter++;
 			}
 		}
 		else
 		{
+			int dealCount = 2; // counter for future deals
 			cout << "Do you want another card? (Y/N): ";
 			cin >> hit;
 			while (hit == 'y' || hit == 'Y')
 			{
-				for (int i = 0; i < 10; i++)
+				user.hand[dealCount] = deal();
+				user.hand[dealCount] = ace(user.hand[dealCount]);
+				cout << "Your next card is: " << user.hand[dealCount] << endl;
+				// update value of player hand
+				user.value = handValue(user.hand);
+				// update status
+				user.status = (gameStatus)handStatus(user.hand);
+				// determine fate
+				if (user.status == 1)
 				{
-					user.hand[i + 2] = deal();
-					// handle ace case
-					if (user.hand[i + 2] == 1)
-					{
-						cout << "Enter a value for that ace! (1 or 11): ";
-						cin >> aceValue;
-						user.hand[i + 2] = aceValue;
-					}
-					cout << "Your next card is: " << user.hand[i + 2] << endl;
-					// update value of player hand
-					user.value = handValue(user.hand);
-					// update status
-					user.status = (gameStatus)handStatus(user.hand);
-					// determine fate
-					if (user.status == 1)
-					{
-						cout << "You won!";
-						user.winCounter++;
-						break;
-					}
-					else if (user.status == 2)
-					{
-						cout << "You lost!";
-						dealer.winCounter++;
-						break;
-					}
-					cout << "Do you want another card? (Y/N): ";
-					cin >> hit;
+					cout << "You won!\n";
+					user.winCounter++;
+					break;
 				}
+				else if (user.status == 2)
+				{
+					cout << "You lost!\n";
+					dealer.winCounter++;
+					break;
+				}
+				dealCount++;
+				cout << "Do you want another card? (Y/N): ";
+				cin >> hit;
 			}
 
 		}
+		cout << "\nSCORE\n" << "You: " << user.winCounter << endl << "Me:  " << dealer.winCounter << endl << endl;
 		hands++;
 	}
 	
 	return 0;
 }
 
-int deal()
-{
-	int cardIndex = 0; // random index value
-	int card = 0; // actual card value to return
 
-	cardIndex = rand() % 52;
-	//cout << "Random index picked:" << cardIndex << endl; // testing output
-
-	card = cardsDeck[cardIndex];
-	//cout << "Card is " << card << endl;
-
-	return card;
-}
 
 void random()
 {
@@ -188,6 +154,20 @@ void initialize(int hand[])
 	{
 		hand[i] = 0;
 	};
+}
+
+int deal()
+{
+	int cardIndex = 0; // random index value
+	int card = 0; // actual card value to return
+
+	cardIndex = rand() % 52 + 1;
+	//cout << "Random index picked:" << cardIndex << endl; // testing output
+
+	card = cardsDeck[cardIndex];
+	//cout << "Card is " << card << endl;
+
+	return card;
 }
 
 int handValue(int hand[])
@@ -246,4 +226,17 @@ int handStatus(int hand[])
 	else if (handValue(hand) == 21)
 		return 1; // win
 	else return 2; // bust
+}
+
+int ace(int card)
+{
+	int aceValue = 1; // value of ace to be asked to player
+	if (card == 1)
+	{
+		cout << "Enter a value for that ace! (1 or 11): ";
+		cin >> aceValue;
+		return aceValue;
+	}
+	else
+		return card;
 }
